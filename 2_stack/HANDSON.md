@@ -125,7 +125,8 @@ pip show qrmi
 pip show pulser
 ```
 
-| Note: for the moment we need to compile the QRMI from source to ensure `munge` support. In the future we will be able to install it from PyPI like `pip install qrmi[pasqal]`
+> [!Note]: 
+> For the moment we need to compile the QRMI from source to ensure `munge` support. In the future we will be able to install it from PyPI like `pip install qrmi[pasqal]`
 
 ## Warden middleware
 
@@ -248,7 +249,8 @@ To launch the mock api, run the following command in a dedicated terminal:
 UVICORN_PORT=8000 make start-qutip-qpu
 ```
 
-| This mock API also comes packaged with an emulator for quantum programs based on [`QuTiP`](https://qutip.org/)
+> [!Note]
+> This mock API also comes packaged with an emulator for quantum programs based on [`QuTiP`](https://qutip.org/)
 
 We can now launch the Warden daemon in an other dedicated terminal 
 
@@ -292,7 +294,8 @@ cd ./hands-on
 ./login.sh
 ```
 
-| Note that we mounted the `hands-on/scripts` dir to `$HOME/scripts` inside the cluster
+> [!Note]
+> We mounted the `hands-on/scripts` dir to `$HOME/scripts` inside the cluster
 
 ## Env population by spank plugin
 
@@ -373,7 +376,8 @@ At the end of the job, the Spank plugin releases the computing resources by dele
 
 The `test_pulser_qrmi.py` script allows users to run a quantum job through the QRMI using Pasqal's [Pulser SDK](https://docs.pasqal.com/pulser/).
 
-| We will get into more details later
+> [!Note]
+> We will get into more details later
 
 ### Sbatch script
 
