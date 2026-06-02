@@ -1,0 +1,11 @@
+{
+  "resources": [
+    {
+      "name": "PASQAL_LOCAL",
+      "type": "pasqal-local",
+      "environment": {
+        "QRMI_URL": "http://localhost:8006"
+      }
+    }
+  ]
+}
