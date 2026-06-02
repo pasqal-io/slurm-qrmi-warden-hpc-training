@@ -2,7 +2,6 @@ import logging
 
 import torch
 from qrmi.pulser.connection import PulserQRMIConnection
-from qrmi.pulser.service import QRMIService
 from qubosolver import QUBOInstance
 from qubosolver.config import QPU, Device, SolverConfig
 from qubosolver.solver import QuboSolver
@@ -13,17 +12,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-# Create QRMI
-service = QRMIService()
-resources = service.resources()
-if len(resources) == 0:
-    print("No quantum resource is available.")
-
-
-# Randomly select QR
-qrmi = resources[0]
-
-qrmi_conn = PulserQRMIConnection(qrmi)
+# PulserQRMIConnection() is going to get the QRMI configuration from env variables.
+qrmi_conn = PulserQRMIConnection()
 # Generate Pulser device
 avail_devices = qrmi_conn.fetch_available_devices()
 name, pulser_device = next(iter(avail_devices.items()))

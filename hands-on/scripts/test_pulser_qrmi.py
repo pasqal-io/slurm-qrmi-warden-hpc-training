@@ -3,7 +3,6 @@ import logging
 from pulser import Pulse, QPUBackend, Register, Sequence
 from pulser.backend.remote import JobParams
 from qrmi.pulser.connection import PulserQRMIConnection
-from qrmi.pulser.service import QRMIService
 
 logging.basicConfig(
     level=logging.DEBUG,  # or INFO
@@ -11,17 +10,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-# Create QRMI
-service = QRMIService()
-resources = service.resources()
-if len(resources) == 0:
-    print("No quantum resource is available.")
 
+# PulserQRMIConnection() is going to get the QRMI configuration from env variables.
+qrmi_conn = PulserQRMIConnection()
 
-# Randomly select QR
-qrmi = resources[0]
-
-qrmi_conn = PulserQRMIConnection(qrmi)
 # Generate Pulser device
 avail_devices = qrmi_conn.fetch_available_devices()
 name, device = next(iter(avail_devices.items()))

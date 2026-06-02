@@ -6,7 +6,6 @@ from qoolqit.embedding import SpringLayoutEmbedder
 from qoolqit.execution import QPU, JobStatus
 from qoolqit.waveforms import Constant, Interpolated, Ramp
 from qrmi.pulser.connection import PulserQRMIConnection
-from qrmi.pulser.service import QRMIService
 
 logging.basicConfig(
     level=logging.DEBUG,  # or INFO
@@ -14,17 +13,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-# Create QRMI
-service = QRMIService()
-resources = service.resources()
-if len(resources) == 0:
-    print("No quantum resource is available.")
-
-
-# Randomly select QR
-qrmi = resources[0]
-
-qrmi_conn = PulserQRMIConnection(qrmi)
+# PulserQRMIConnection() is going to get the QRMI configuration from env variables.
+qrmi_conn = PulserQRMIConnection()
 
 # Generate Pulser device
 avail_devices = qrmi_conn.fetch_available_devices()
