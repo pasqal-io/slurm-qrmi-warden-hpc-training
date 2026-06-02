@@ -147,7 +147,8 @@ sudo sbatch scripts/jobs.sh
 
 And everything goes okay !
 
-| Note: the `authorized_users` parameters is one way to restrict user access to the QPU. We would recommend that user access to the QPU is managed with standard Slurm accounting mechanisms dependending on the solution chosed by the cluster administrators for the QAN setup like GRES or License resources
+> [!Note]
+> The `authorized_users` parameters is one way to restrict user access to the QPU. We would recommend that user access to the QPU is managed with standard Slurm accounting mechanisms dependending on the solution chosed by the cluster administrators for the QAN setup like GRES or License resources
 
 #### QPU timeout / polling
 
@@ -193,7 +194,8 @@ Traceback (most recent call last):
 pulser.backend.remote.RemoteResultsError: Results are not available for all jobs. Use the `get_available_results` method to retrieve partial results.
 ```
 
-| Note: we are currently working on better ways to forward job status and failures from Warden to the user
+> [!Note]
+> We are currently working on better ways to forward job status and failures from Warden to the user
 
 And in the Warden logs:
 
