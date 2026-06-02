@@ -9,8 +9,8 @@
 #SBATCH --nodelist=c1
 
 # Your script goes here
-source $HOME/venv/bin/activate
-python $HOME/scripts/test_env.py
-# python $HOME/scripts/test_pulser_qrmi.py
-# python $HOME/scripts/test_qoolqit_qrmi.py
-# python $HOME/scripts/test_qubo_qrmi.py
+source /home/slurmuser/venv/bin/activate
+python /home/slurmuser/scripts/test_env.py
+# python /home/slurmuser/scripts/test_pulser_qrmi.py
+# python /home/slurmuser/scripts/test_qoolqit_qrmi.py
+# python /home/slurmuser/scripts/test_qubo_qrmi.py
