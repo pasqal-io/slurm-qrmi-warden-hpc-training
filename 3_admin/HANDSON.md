@@ -4,7 +4,7 @@ In this session, the goal is to go through the main configuration files and log 
 
 ## Spank plugin
 
-In our case there (meaning the `pasqal-local` qrmi implementation), there not much to configure or mess-up. 
+In our case there (meaning the `pasqal-local` qrmi implementation), there is not much to configure or mess-up. 
 
 The only parameter that this qrmi implementation need is the address of Warden's API:
 
@@ -24,7 +24,7 @@ The only parameter that this qrmi implementation need is the address of Warden's
 
 And as a reminder, since the spank plugin is loaded by `slurmstepd` which is spawned by `slurmd` when launching a job step, the spank plugin is going to try to acquire the QPU resources from Warden by running the QRMI api from the compute node.
 
-The Spank plugin fails to acquire the resources from Warden because:
+The Spank plugin may fail to acquire the resources from Warden because:
 - We fail to setup the right `QRMI_URL` parameter
 - Warden API is down
 - The job is not running on the QAN where Warden is running (`c1`)
@@ -46,7 +46,7 @@ Caused by:
 [2026-06-02T13:45:58.018] [8.batch] error: spank_qrmi, No QPU resource available
 ```
 
-The QRMI used by the spank plugin is failing to access the configured 
+The QRMI used by the spank plugin is failing to access the configured resource.
 
 Which is the same error that is going to be raised by the QRMI in the user script:
 
@@ -152,7 +152,7 @@ And everything goes okay !
 
 #### QPU timeout / polling
 
-You can set the parameters for polling and timeout of:
+You can set the parameters for the timeout and polling  of:
 - The status of the QPU before launching a job (is it "UP" ?)
 - The status of the job currently running on the QPU
 
