@@ -19,3 +19,12 @@
 # Resources
 
 Slurm docker cluster setup inspired by Giovanni Torres's [slurm-docker-cluster repo](https://github.com/giovtorres/slurm-docker-cluster)
+
+Mentioned repos and documentation
+- [QRMI](https://github.com/qiskit-community/qrmi)
+- [Spank plugin](https://github.com/qiskit-community/spank-plugins)
+- [Warden](https://github.com/pasqal-io/warden)
+- [Pasqal documentation](https://docs.pasqal.com/)
+    - [Pulser](https://docs.pasqal.com/pulser/)
+    - [QoolQit](https://docs.pasqal.com/qoolqit/)
+    - [QUBO](https://docs.pasqal.com/applicationsolvingtools/qubo/)
