@@ -4,9 +4,9 @@ In this session, the goal is to go through the main configuration files and log 
 
 ## Spank plugin
 
-In our case there (meaning the `pasqal-local` qrmi implementation), there is not much to configure or mess-up. 
+In our case (the `pasqal-local` QRMI implementation), there is not much to configure or mess up. 
 
-The only parameter that this qrmi implementation need is the address of Warden's API:
+The only parameter that this QRMI implementation needs is the address of Warden's API:
 
 ```json
 {
@@ -30,7 +30,7 @@ The Spank plugin may fail to acquire the resources from Warden because:
 - The job is not running on the QAN where Warden is running (`c1`)
 
 We can simulate this scenario by 
-- Modifying the `qrmi_conf.json` file to point `QRMI_URL` to a wrong value
+- Modifying the `qrmi_config.json` file to point `QRMI_URL` to a wrong value
 - Running a quantum job like `test_pulser_qrmi.py`
 
 We get the following logs from `slurmd.log`:
@@ -93,7 +93,7 @@ There are 5 main sections:
 - `qpu`: defines the QPU API endpoint and retry policy for calls to the API
 - `logging`: logging configuration for Python. The configuration is passed as-is to python for logging configuration. Refer to the official [python documentation](https://docs.python.org/3/library/logging.config.html#configuration-dictionary-schema)
 
-Every parameter in the configuration can be overriden by env variables. For example the `api.port` parameter in `config.yaml` can be overriden by the `WARDEN_API_PORT` env variable. 
+Every parameter in the configuration can be overridden by env variables. For example the `api.port` parameter in `config.yaml` can be overridden by the `WARDEN_API_PORT` env variable. 
 
 So we can set the api port at launch time like:
 ```
@@ -142,13 +142,13 @@ INFO warden.api.routes.sessions: Unauthorized user: 1000 attempting to create a 
 Now try running the same job as root user with `sudo`:
 
 ```
-sudo sbatch scripts/jobs.sh
+sudo sbatch scripts/job.sh
 ```
 
 And everything goes okay !
 
-> [!Note]
-> The `authorized_users` parameters is one way to restrict user access to the QPU. We would recommend that user access to the QPU is managed with standard Slurm accounting mechanisms dependending on the solution chosed by the cluster administrators for the QAN setup like GRES or License resources
+> [!NOTE]
+> The `authorized_users` parameters is one way to restrict user access to the QPU. We would recommend that user access to the QPU is managed with standard Slurm accounting mechanisms depending on the solution chosen by the cluster administrators for the QAN setup like GRES or License resources
 
 #### QPU timeout / polling
 
@@ -194,7 +194,7 @@ Traceback (most recent call last):
 pulser.backend.remote.RemoteResultsError: Results are not available for all jobs. Use the `get_available_results` method to retrieve partial results.
 ```
 
-> [!Note]
+> [!NOTE]
 > We are currently working on better ways to forward job status and failures from Warden to the user
 
 And in the Warden logs:
@@ -208,8 +208,8 @@ INFO warden.scheduler: Job 4 ended with status: CANCELED
 
 ### Admin commands
 
-Warden's makefile provide a single useful administrative command for the moment:
-- `set-accessibility`
+Warden's Makefile provides an administrative command to control access to the QPU:
+- `set-accessible`
 
 #### Cut all access to the QPU through Warden
 
@@ -225,7 +225,8 @@ sudo make set-accessible IS_ACCESSIBLE=false MESSAGE="QPU maintenance"
 
 Each time you update Warden's accessibility, the value and the message are stored in the `accessibility_settings` table of the db
 
-| Only the root user (admin) is allowed to set the accessibility status of warden. UID is verified by munge. Try to run the command without the sudo
+> [!NOTE]
+> Only the root user (admin) is allowed to set the accessibility status of Warden. The UID is verified by munge. Try to run the command without `sudo`.
 
 If we try to submit a job to the QPU afterwards, you'll notice that the user script fails to find any QRMI resource as the spank plugin was unable to acquire the QPU:
 
@@ -256,10 +257,10 @@ error: spank_qrmi, No QPU resource available
 
 ### DB
 
-We can also vizualize some data from the Warden DB with the `sqlite-utils` python cli tool:
+We can also visualize some data from the Warden DB with the `sqlite-utils` python cli tool:
 
 ```bash
-source /home/slurmuser/venv/activate
+source /home/slurmuser/venv/bin/activate
 pip install sqlite-utils
 ```
 

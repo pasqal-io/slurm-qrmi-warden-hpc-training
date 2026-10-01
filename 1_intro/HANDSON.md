@@ -15,7 +15,7 @@ cd pasqal_training/hands-on
 ## The Slurm Docker Cluster
 
 We will work within a Slurm cluster deployed across docker containers. 
-The `docker-compose.yaml` file describes this toy slurm cluster:
+The `docker-compose.yml` file describes this toy slurm cluster:
 
 ```mermaid
 graph TB
@@ -52,7 +52,7 @@ Some directories are mounted from the host to the slurm cluster, also for conven
     - `./qrmi_config.json` on `/etc/slurm/qrmi_config.json`
     - `./plugstack.conf` on `/etc/slurm/plugstack.conf`
 - Across `login` and compute nodes (`c[1-2]`)
-      - `./scripts` on `/home/slurmuser/scripts`
+    - `./scripts` on `/home/slurmuser/scripts`
 
 ## Build the cluster
 

@@ -1,4 +1,8 @@
-# Training
+# Slurm + QRMI + Warden HPC training
+
+Hands-on training for HPC administrators on integrating a Pasqal QPU into a Slurm cluster. You deploy a toy Slurm cluster in Docker, install the [SPANK plugin](https://github.com/qiskit-community/spank-plugins), the [QRMI](https://github.com/qiskit-community/qrmi) and the [Warden](https://github.com/pasqal-io/warden) middleware, then run quantum jobs against a mock QPU and practice the main admin tasks.
+
+Requirements: `docker` and `git`.
 
 ## 1-Introduction 
 

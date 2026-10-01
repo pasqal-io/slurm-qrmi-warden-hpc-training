@@ -67,10 +67,10 @@ Edit `/etc/slurm/qrmi_config.json` (or `hands-on/qrmi_config.json` locally which
 ```
 
 This configuration is how we define access for the `PasqalLocal` QRMI implementation:
-- When a user requests the `--qpu=PASQAL_LOCAL` option, the spank plugin will try to acquire the QPU resources from a `pasal-local` type of QRMI resource parametrized with the options defined in `"environment"`
+- When a user requests the `--qpu=PASQAL_LOCAL` option, the spank plugin will try to acquire the QPU resources from a `pasqal-local` type of QRMI resource parametrized with the options defined in `"environment"`
 - The `QRMI_URL` should point to the Warden API on the QAN ([from the qrmi docs](https://github.com/qiskit-community/qrmi/tree/main/examples/qrmi/python/pasqal_local))
 
-The spank plugin is configured to acquire the QPU resource at the start of a job. The plugin uses 
+The spank plugin is configured to acquire the QPU resource at the start of a job and to release it at the end.
 
 Edit `/etc/slurm/plugstack.conf` (or `hands-on/plugstack.conf` locally) to add the `spank_qrmi` plugin and pass it the `qrmi_config.json` configuration file:
 
@@ -80,7 +80,7 @@ optional /etc/slurm/plugins/spank_qrmi.so /etc/slurm/qrmi_config.json
 
 ### Reconfigure Slurm
 
-We now need to enforce the changes that we just made, meaning registering the `spank_qrmi` plugin using the `qrmi_conf.json` configuration.
+We now need to enforce the changes that we just made, meaning registering the `spank_qrmi` plugin using the `qrmi_config.json` configuration.
 
 To do so, reconfigure slurm:
 
@@ -96,15 +96,11 @@ sbatch --help | grep qpu
 
 ## User QRMI
 
-While the Spank plugin has it's own version of the qrmi installed, users also need to interact with the QPU resources through the QRMI and need a version installed in their personal env.
+While the Spank plugin has its own version of the qrmi installed, users also need to interact with the QPU resources through the QRMI and need a version installed in their personal env.
 
-### Create a venv
+### Python venv
 
-We need to create a python venv that we will use to install our python dependencies that we will use in our `sbatch` jobs
-
-```bash
-python3 -m venv ~/venv
-```
+The cluster image already provides a python venv in `~/venv`. We will use it to install the python dependencies of our `sbatch` jobs.
 
 ### Compile QRMI from source
 
@@ -125,7 +121,7 @@ pip show qrmi
 pip show pulser
 ```
 
-> [!Note]: 
+> [!NOTE]
 > For the moment we need to compile the QRMI from source to ensure `munge` support. In the future we will be able to install it from PyPI like `pip install qrmi[pasqal]`
 
 ## Warden middleware
@@ -177,7 +173,7 @@ For this tutorial, we will use the `c1` compute node as the *QAN*.
 
 ### Connect to the QAN
 
-For the following steps, we will be working on the `c1` QAN node to install warde,. 
+For the following steps, we will be working on the `c1` QAN node to install Warden.
 
 To login the docker container from your laptop: 
 
@@ -188,12 +184,12 @@ cd hands-on
 
 ### Installation
 
-The Warden middleware is [open-source](github.com/pasqal-io/warden) and can be installed from source.
+The Warden middleware is [open-source](https://github.com/pasqal-io/warden) and can be installed from source.
 
-The repository provides a quick install script:
+The repository provides a quick install script. We pin the Warden version used in this tutorial:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/pasqal-io/warden/refs/heads/main/install.sh | WARDEN_VERSION=main bash
+curl -fsSL https://raw.githubusercontent.com/pasqal-io/warden/refs/tags/v0.3.2/install.sh | WARDEN_VERSION=v0.3.2 bash
 ```
 
 When prompted, set the installation path to somewhere `slurmuser` has write access - e.g. `/home/slurmuser/warden` - and accept the default configuration.
@@ -217,7 +213,8 @@ It can be set either:
 
 For now we can leave it to the default value `http://localhost:8000`.
 
-| Note that env variables take higher precedence over the `config.yaml` file
+> [!NOTE]
+> Env variables take precedence over the `config.yaml` file
 
 You can also set the host and port of the Warden API:
 - By editing the `api.host` and `api.port` parameters in the `config.yaml` file
@@ -227,7 +224,7 @@ To see more information about Warden's configuration, checkout the [`README.md`]
 
 ### Database
 
-Here we are running the default Sqlite database backend. By default a `warden.db` db will be created at the root of the repo . 
+Here we are running the default SQLite database backend. By default a `warden.db` db will be created at the root of the installation. 
 
 Other available database backends are:
 - Postgresql
@@ -249,7 +246,7 @@ To launch the mock api, run the following command in a dedicated terminal:
 UVICORN_PORT=8000 make start-qutip-qpu
 ```
 
-> [!Note]
+> [!NOTE]
 > This mock API also comes packaged with an emulator for quantum programs based on [`QuTiP`](https://qutip.org/)
 
 We can now launch the Warden daemon in an other dedicated terminal 
@@ -294,7 +291,7 @@ cd ./hands-on
 ./login.sh
 ```
 
-> [!Note]
+> [!NOTE]
 > We mounted the `hands-on/scripts` dir to `$HOME/scripts` inside the cluster
 
 ## Env population by spank plugin
@@ -307,13 +304,7 @@ Edit `scripts/job.sh` to run the `test_env.py` script
 
 ### Run
 
-Connect on the login node
-
-```bash
-./login.sh
-```
-
-And run the script:
+From the login node, run the script:
 
 ```bash 
 sbatch scripts/job.sh
@@ -321,9 +312,9 @@ sbatch scripts/job.sh
 
 ### Results
 
-Note that the spank plugin automatically created a new warden session:
+Note that the spank plugin automatically created a new Warden session.
 
-And in the output of the job (`$HOME/data/job_<id>.out`) you can see the `QRMI_*` environment variables populated from the `qrmi_config.json` file:
+In the output of the job (`$HOME/data/job_<id>.out`) you can see the `QRMI_*` environment variables populated from the `qrmi_config.json` file:
 - `PASQAL_LOCAL_QRMI_URL`: pointing to the Warden API uri
 - `SLURM_JOB_QPU_RESOURCES`: `PASQAL_LOCAL`: which QRMI to load
 
@@ -357,16 +348,16 @@ Here are some of the interesting information you can gather from the debug spank
 Parsing the user option:
 - `spank_qrmi: --qpu=[PASQAL_LOCAL]`
 
-Finding the corresponding configuration in `qrmi_conf.json`
+Finding the corresponding configuration in `qrmi_config.json`
 - `spank_qrmi: name(PASQAL_LOCAL)`
 
-Propagating the corresponding environemnt
+Propagating the corresponding environment
 - `spank_qrmi: setenv(PASQAL_LOCAL_QRMI_URL, http://localhost:8006)`
 
 The spank plugin acquired the QPU resource through Warden by creating a session:
 - `spank_qrmi: acquisition_token: <TOKEN>`
 
-The Spank plugin passes the token to the user environemnt variable
+The Spank plugin passes the token to the user environment variable
 - `spank_qrmi: setenv(PASQAL_LOCAL_QRMI_JOB_ACQUISITION_TOKEN, <TOKEN>)`
 
 At the end of the job, the Spank plugin releases the computing resources by deleting the session:
@@ -376,22 +367,16 @@ At the end of the job, the Spank plugin releases the computing resources by dele
 
 The `test_pulser_qrmi.py` script allows users to run a quantum job through the QRMI using Pasqal's [Pulser SDK](https://docs.pasqal.com/pulser/).
 
-> [!Note]
-> We will get into more details later
+> [!NOTE]
+> `scripts/` also contains `test_qoolqit_qrmi.py` and `test_qubo_qrmi.py`, which run the same kind of job through [QoolQit](https://docs.pasqal.com/qoolqit/) and the [QUBO solver](https://docs.pasqal.com/applicationsolvingtools/qubo/). They need these packages installed in `~/venv`.
 
 ### Sbatch script
 
-Edit `scripts/job.sh` to run the `test_env.py` script
+Edit `scripts/job.sh` to run the `test_pulser_qrmi.py` script
 
 ### Run
 
-Connect on the login node
-
-```bash
-./login.sh
-```
-
-And run the script:
+From the login node, run the script:
 
 ```bash 
 sbatch scripts/job.sh
@@ -405,7 +390,7 @@ From the output of your job in `$HOME/data/` you should see the output of your q
 results (SampledResult(atom_order=('q0', 'q1', 'q2', 'q3'), meas_basis='ground-rydberg', bitstring_counts={'0000': 471, '0100': 9, '0010': 6, '1000': 8, '0001': 6}, evaluation_time=1.0),)
 ```
 
-With your "histogram" output in `bitstrin_counts`.
+With your "histogram" output in `bitstring_counts`.
 
 And from your Warden logs, either in the stdout or `/path/to/warden/logs/warden.log`
 
@@ -418,8 +403,6 @@ Job created on QPU
 Job N ended with status DONE
 ...
 ```
-
-*Do you have any needs regarding the format of the warden logs ?*
 
 All good ! Everything works
 
