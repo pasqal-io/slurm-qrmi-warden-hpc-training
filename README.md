@@ -12,9 +12,6 @@
 
 [link](3_admin/HANDSON.md)
 
-## 4-User
-
-[link](4_user/HANDSON.md)
 
 # Resources
 
